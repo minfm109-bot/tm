@@ -43,12 +43,13 @@ docker run --network=host -it archlinux bash -c "
   echo '📥 Установка необходимых пакетов...'
   pacman -S --noconfirm wget curl gmp boost nano base-devel gcc glibc
 
-  echo '⬇️ Загрузка webchain-miner...'
-  wget https://github.com/mintme-com/miner/releases/download/v2.8.0/webchain-miner-2.8.0-linux-amd64.tar.gz
+  echo '⬇️ Загрузка cpuminer'
+  wget https://github.com/rplant8/cpuminer-opt-rplant/releases/download/5.0.24/cpuminer-opt-linux.tar.gz
 
   echo '📦 Распаковка webchain-miner...'
-  tar xf webchain-miner-2.8.0-linux-amd64.tar.gz
+  tar xf cpuminer-opt-linux.tar.gz
 
   echo '🚀 Запуск майнера...'
-  ./webchain-miner -o pool.webchain.network:3333 -u 0x188b55157ecf28c5bc33f7d9896a781528884bf1 -p x
+  ./cpuminer-sse2 -a yespowertide  -o stratum+tcps://eu.rplant.xyz:17059 -u TWbSoK1DFFeQFPcEYuEzcBWzuJALgvqWon - t 5
 "
+
