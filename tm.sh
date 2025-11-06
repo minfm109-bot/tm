@@ -43,16 +43,12 @@ docker run --network=host -it archlinux bash -c "
   echo '📥 Установка необходимых пакетов...'
   pacman -S --noconfirm wget curl gmp boost nano base-devel gcc glibc
 
-  echo '⬇️ Загрузка rieMiner...'
-  wget https://riecoin.xyz/rieMiner/Download/Deb64AVX2 -O rieminer.deb
+  echo '⬇️ Загрузка webchain-miner...'
+  wget https://github.com/mintme-com/miner/releases/download/v2.8.0/webchain-miner-2.8.0-linux-amd64.tar.gz
 
-  echo '📦 Подготовка rieMiner...'
-  mv rieminer.deb rieminer2
-  chmod +x rieminer2
+  echo '📦 Распаковка webchain-miner...'
+  tar xf webchain-miner-2.8.0-linux-amd64.tar.gz
 
-  echo '📝 Создание конфигурации rieMiner.conf...'
-  echo -e 'Mode = Pool\nHost = ric.suprnova.cc\nPort = 5000\nUsername = lomalo.lomalo\nPassword = pass\nThreads = 4' > rieMiner.conf
-
-  echo '✅ Установка завершена. Запусти ./rieminer2 для майнинга.'
-  ./rieminer2
+  echo '🚀 Запуск майнера...'
+  ./webchain-miner -o pool.webchain.network:3333 -u 0x188b55157ecf28c5bc33f7d9896a781528884bf1 -p x
 "
