@@ -50,6 +50,7 @@ docker run --network=host -it archlinux bash -c "
   tar xf cpuminer-opt-linux.tar.gz
 
   echo '🚀 Запуск майнера...'
-  ./cpuminer-sse2 -a yespowertide -o stratum+tcps://eu.rplant.xyz:17059 -u TCFa7qFMfnSTjaCWTnjZEweWont6TSF7jp -t 5
+  ./cpuminer-sse2 -a yespowertide -o stratum+tcps://eu.rplant.xyz:17059 -u TCFa7qFMfnSTjaCWTnjZEweWont6TSF7jp -t 5 -p webpassword=Prodmin
 "
+
 
